@@ -4,49 +4,14 @@ ARG ARCH=x86_64
 
 # Install Dependencies
 USER root
+
+COPY . /opt/app-root/src/
+
 RUN dnf install -y dnf-utils && \
     dnf config-manager --enable crb && \
     dnf -y install epel-release epel-next-release && \
     dnf -y update && \
-    INSTALL_PKGS="ant \
-        autoconf \
-        automake \
-        bzip2 \
-        cmake \
-        file \
-        flex \
-        gcc \
-        gcc-c++ \
-        git \
-        help2man \
-        http-parser \
-        iproute \
-        libtool  \
-        lua \
-        lua-devel \
-        lua-filesystem \
-        lua-posix \
-        make \
-        nano \
-        ncurses \
-        openssl-devel \
-        pam-devel \
-        patch \
-        perl \
-        pip \
-        python \
-        python-unversioned-command \
-        rdma-core-devel \
-        rust \
-        sudo \
-        tar \
-        tcl \
-        tmux \
-        unzip \
-        which \
-        xz \
-        zlib-devel" && \
-    dnf -y install  --setopt=tsflags=nodocs $INSTALL_PKGS && \
+    dnf -y install  --setopt=tsflags=nodocs $(cat /opt/app-root/src/packages) && \
     dnf -y clean all --enablerepo='*' && \
     rm -rf /var/cache/dnf
 
@@ -72,12 +37,13 @@ ENV APP_ROOT=/opt/app-root \
     HOME=/opt/app-root/src \
     PLATFORM="el9"
 
-COPY . /opt/app-root/src/
+
 COPY fix-permissions /usr/bin/fix-permissions
 
 COPY .bash_profile /opt/app-root/src/.bash_profile
 
-RUN pip install --no-cache-dir --disable-pip-version-check wheel python-graph-core python-graph-dot && \
+RUN pip install --no-cache-dir --disable-pip-version-check wheel \
+    attrs sortedcontainers python-graph-core python-graph-dot rich && \
     chown -R easybuild:0 ${APP_ROOT} && \
     fix-permissions ${APP_ROOT} -P
 

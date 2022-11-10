@@ -1,23 +1,23 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: odh-easybuild
+  name: module-builder
   labels:
-    app: odh-easybuild
+    app: module-builder
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: odh-easybuild
-      app.kubernetes.io/part-of: odh-easybuild
-      deployment: odh-easybuild
+      app: module-builder
+      app.kubernetes.io/part-of: module-builder
+      deployment: module-builder
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: odh-easybuild
-        app.kubernetes.io/part-of: odh-easybuild
-        deployment: odh-easybuild
+        app: module-builder
+        app.kubernetes.io/part-of: module-builder
+        deployment: module-builder
     spec:
       initContainers:
         - resources:
@@ -29,7 +29,7 @@ spec:
               memory: 500Mi
           name: easybuild-init
           imagePullPolicy: IfNotPresent
-          image: 'quay.io/guimou/easybuild-f34-py39:latest'
+          image: 'quay.io/odh-highlander/module-builder:0.0.5'
           volumeMounts:
             - mountPath: /opt/apps/easybuild
               name: easybuild-data
@@ -45,7 +45,7 @@ spec:
               memory: 500Mi
           name: easybuild-run
           imagePullPolicy: IfNotPresent
-          image: 'quay.io/guimou/easybuild-f34-py39:latest'
+          image: 'quay.io/odh-highlander/module-builder:0.0.5'
           volumeMounts:
             - mountPath: /opt/apps/easybuild
               name: easybuild-data

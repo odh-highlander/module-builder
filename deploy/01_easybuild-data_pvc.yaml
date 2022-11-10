@@ -8,5 +8,5 @@ spec:
   resources:
     requests:
       storage: 100Gi
-  storageClassName: ocs-storagecluster-cephfs
+  storageClassName: rwx_storage_class
   volumeMode: Filesystem
